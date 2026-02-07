@@ -1,0 +1,50 @@
+{
+  "timestamp": "February 06, 2026 11:19:54 PM",
+  "run_id": "4e289fed2bd049f6acd599ac5b670bb2",
+  "overall": {
+    "precision": 0.1381815191469532,
+    "recall": 0.3717277486910995,
+    "f1": 0.2014707645577715,
+    "num_samples": 191.0
+  },
+  "per_class": {
+    "computer-vision": {
+      "precision": 0.3717277486910995,
+      "recall": 1.0,
+      "f1": 0.5419847328244275,
+      "num_samples": 71.0
+    },
+    "mlops": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "num_samples": 16.0
+    },
+    "natural-language-processing": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "num_samples": 78.0
+    },
+    "other": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "num_samples": 26.0
+    }
+  },
+  "slices": {
+    "nlp_llm": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "num_samples": 28
+    },
+    "short_text": {
+      "precision": 0.42857142857142855,
+      "recall": 0.42857142857142855,
+      "f1": 0.42857142857142855,
+      "num_samples": 7
+    }
+  }
+}

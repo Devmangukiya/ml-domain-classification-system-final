@@ -1,0 +1,124 @@
+# =========================
+# DATA & MODELS (DVC)
+# =========================
+# =========================
+# DATA & MODELS (DVC)
+# =========================
+# Ignore all raw data by default
+datasets/
+
+# Ignore model binaries (tracked via DVC or registry)
+models/**
+!models/**/*.dvc
+
+# DVC internal cache (never commit)
+.dvc/cache/
+
+# DVC internal cache (never commit)
+.dvc/cache/
+
+# =========================
+# EXPERIMENT & TRAINING ARTIFACTS
+# =========================
+# Ray / TorchTrainer / Tune outputs
+TorchTrainer_*
+ray_results/
+
+# MLflow local tracking
+mlruns/
+mlflow/
+
+# Training outputs / experiments
+logs/
+stores/
+workspaces/
+efs/
+Devmangukiya/
+
+# =========================
+# IDEs
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# PYTHON
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# =========================
+# BUILD / PACKAGING
+# =========================
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+ML_Domain_Classification_System.egg-info/
+
+# =========================
+# TESTING / COVERAGE
+# =========================
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# =========================
+# NOTEBOOKS
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# ENVIRONMENTS
+# =========================
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# =========================
+# DOCS / SITES
+# =========================
+site/
+docs/_build/
+
+# =========================
+# OS / MISC
+# =========================
+.DS_Store
+.trash/
+zx.txt
+zx.py
+s3-workflow-user_accessKeys.csv
+/datasets

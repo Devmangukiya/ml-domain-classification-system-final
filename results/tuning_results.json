@@ -1,0 +1,17 @@
+{
+  "timestamp": "February 06, 2026 11:04:58 PM",
+  "run_id": "3691a519d8e24345bee1023e5d8766c4",
+  "params": {
+    "dropout_p": 0.5,
+    "lr": 0.0001,
+    "lr_factor": 0.8,
+    "lr_patience": 3.0
+  },
+  "metrics": [
+    {
+      "epoch": 0,
+      "train_loss": 0.6858163475990295,
+      "val_loss": 0.5555307865142822
+    }
+  ]
+}
