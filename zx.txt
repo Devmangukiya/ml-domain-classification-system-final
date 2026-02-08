@@ -1,4 +1,4 @@
-python madewithml/train.py --experiment-name %EXPERIMENT_NAME% --dataset-loc %DATASET_LOC% --train-loop-config "%TRAIN_LOOP_CONFIG%" --num-workers 1 --cpu-per-worker 4 --gpu-per-worker 0 --num-epochs 10 --batch-size 256 --results-fp results\training_results.json
+python components/train.py --experiment-name %EXPERIMENT_NAME% --dataset-loc %DATASET_LOC% --train-loop-config "%TRAIN_LOOP_CONFIG%" --num-workers 1 --cpu-per-worker 4 --gpu-per-worker 0 --num-epochs 10 --batch-size 256 --results-fp results\training_results.json
 
 
 set EXPERIMENT_NAME=llm
@@ -50,7 +50,7 @@ python components\tune.py ^
 set EXPERIMENT_NAME=llm
 for /f "delims=" %i in ('python components\predict.py get-best-run-id --experiment-name %EXPERIMENT_NAME% --metric val_loss --mode ASC') do set RUN_ID=%i
 set HOLDOUT_LOC=https://raw.githubusercontent.com/GokuMohandas/Made-With-ML/main/datasets/holdout.csv
-python madewithml\evaluate.py ^
+python components\evaluate.py ^
   --run-id %RUN_ID% ^
   --dataset-loc %HOLDOUT_LOC% ^
   --results-fp results\evaluation_results.json
@@ -95,13 +95,33 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 
 .\deploy\jobs\workloads.ps1
-
+./deploy/jobs/workloads.sh
 
 anyscale cluster-env build deploy/cluster_env.yaml --name $CLUSTER_ENV_NAME
 anyscale cluster-compute create deploy/cluster_compute.yaml --name final-cpu
 
 
-anyscale cluster-compute 
+anyscale cluster-compute lsit
+anyscale cluster-env list
 
 
 anyscale job submit deploy/jobs/workloads.yaml
+
+
+chmod +x deploy/jobs/workloads.sh
+./deploy/jobs/workloads.sh
+
+
+pip show pytest
+
+conda activate
+conda create -n ray-ml python=3.10 -y
+conda activate ray-ml
+
+
+unset RAY_RUNTIME_ENV_HOOK
+export GITHUB_USERNAME=Devmangukiya
+export PYTHONPATH=$(pwd)
+pytest tests/code/test_train.py -v
+
+echo $GITHUB_USERNAME
