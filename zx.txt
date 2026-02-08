@@ -1,0 +1,107 @@
+python madewithml/train.py --experiment-name %EXPERIMENT_NAME% --dataset-loc %DATASET_LOC% --train-loop-config "%TRAIN_LOOP_CONFIG%" --num-workers 1 --cpu-per-worker 4 --gpu-per-worker 0 --num-epochs 10 --batch-size 256 --results-fp results\training_results.json
+
+
+set EXPERIMENT_NAME=llm
+
+echo %TRAIN_LOOP_CONFIG%
+
+
+python components/train.py ^
+  --experiment-name llm ^
+  --dataset-loc https://raw.githubusercontent.com/GokuMohandas/Made-With-ML/main/datasets/dataset.csv ^
+  --train-loop-config "{\"dropout_p\":0.5,\"lr\":0.0001,\"lr_factor\":0.8,\"lr_patience\":3}" ^
+  --num-workers 1 ^
+  --cpu-per-worker 4 ^
+  --num-samples 50 ^
+  --num-epochs 3 ^
+  --batch-size 256 ^
+  --results-fp results\training_results.json
+
+
+python components/train.py `
+  --experiment-name llm `
+  --dataset-loc https://raw.githubusercontent.com/GokuMohandas/Made-With-ML/main/datasets/dataset.csv `
+  --train-loop-config '{"dropout_p": 0.5, "lr": 0.0001, "lr_factor": 0.8, "lr_patience": 3}' `
+  --num-workers 1 `
+  --cpu-per-worker 4 `
+  --num-samples 50 `
+  --num-epochs 3 `
+  --batch-size 256 `
+  --results-fp results/training_results.json
+
+
+http://127.0.0.1:8265
+mlflow ui --backend-store-uri file:///C:/Users/dev_m/MLOPs_Project/Devmangukiya/mlflow --port 5002
+
+python components\tune.py ^
+  --experiment-name llm ^
+  --dataset-loc https://raw.githubusercontent.com/GokuMohandas/Made-With-ML/main/datasets/dataset.csv ^
+  --initial-params "[{\"train_loop_config\":{\"dropout_p\":0.5,\"lr\":0.0001,\"lr_factor\":0.8,\"lr_patience\":3}}]" ^
+  --num-runs 2 ^
+  --num-workers 1 ^
+  --cpu-per-workers 3 ^
+  --num-samples 51 ^
+  --num-epochs 3 ^
+  --batch-size 256 ^
+  --results-fp results\tuning_results.json
+
+
+
+set EXPERIMENT_NAME=llm
+for /f "delims=" %i in ('python components\predict.py get-best-run-id --experiment-name %EXPERIMENT_NAME% --metric val_loss --mode ASC') do set RUN_ID=%i
+set HOLDOUT_LOC=https://raw.githubusercontent.com/GokuMohandas/Made-With-ML/main/datasets/holdout.csv
+python madewithml\evaluate.py ^
+  --run-id %RUN_ID% ^
+  --dataset-loc %HOLDOUT_LOC% ^
+  --results-fp results\evaluation_results.json
+
+
+python components\evaluate.py ^
+  --run-id %RUN_ID% ^
+  --dataset-loc datasets\holdout.csv ^
+  --results-fp results\evaluation_results.json
+
+
+python components/predict.py predict --run-id %RUN_ID% --title "Transfer learning with transformers" --description "Using transformers for transfer learning on text classification tasks."
+
+
+# Set up
+set EXPERIMENT_NAME="llm"
+python components/serve.py --run_id %RUN_ID%
+
+
+curl -X POST http://127.0.0.1:8000/predict/ ^
+  -H "Content-Type: application/json" ^
+  -d "{\"title\":\"GenRL\",\"description\":\"GenRL is a PyTorch-First Reinforcement Learning library centered around reproducible and generalizable algorithm implementations.\"}"
+
+
+curl -X POST http://127.0.0.1:8000/evaluate/ ^
+  -H "Content-Type: application/json" ^
+  -d "{\"dataset\":\"https://raw.githubusercontent.com/GokuMohandas/Made-With-ML/main/datasets/holdout.csv\"}"
+
+
+python3 -m pytest tests/code
+
+set DATASET_LOC=https://raw.githubusercontent.com/GokuMohandas/Made-With-ML/main/datasets/dataset.csv
+pytest --dataset-loc=%DATASET_LOC% tests/data --verbose --disable-warnings
+
+
+
+set EXPERIMENT_NAME="llm"
+for /f "delims=" %i in ('python components\predict.py get-best-run-id --experiment-name %EXPERIMENT_NAME% --metric val_loss --mode ASC') do set RUN_ID=%i
+pytest --run-id=$RUN_ID tests/model --verbose --disable-warnings
+
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+
+
+.\deploy\jobs\workloads.ps1
+
+
+anyscale cluster-env build deploy/cluster_env.yaml --name $CLUSTER_ENV_NAME
+anyscale cluster-compute create deploy/cluster_compute.yaml --name final-cpu
+
+
+anyscale cluster-compute 
+
+
+anyscale job submit deploy/jobs/workloads.yaml
