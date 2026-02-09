@@ -1,14 +1,14 @@
-name: workloads-minimal
+name: workloads
 project_id: prj_hbeb2uey7lc5t4is6u3yq5j3hf
 
-cluster_env: dev-cluster-env
-compute_config: free-cpu
+cluster_env: cluster-env
+compute_config: final-cpu
 
 runtime_env:
   working_dir: .
   upload_path: s3://model-registry-dev-mangukiya-v2/Devmangukiya/jobs
+  env_vars:
+    GITHUB_USERNAME: Devmangukiya 
 
 entrypoint: bash deploy/jobs/workloads.sh
-
-
 max_retries: 0

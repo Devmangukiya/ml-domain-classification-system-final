@@ -17,10 +17,6 @@ from components.data import CustomPreprocessor
 from components.model import FinetunedLLM
 from components.utils import collate_fn
 
-if not ray.is_initialized():
-    ray.init(ignore_reinit_error=True,
-             num_gpus = 0,
-             include_dashboard = True)
 
 
 ## Initialize Typer CLI app

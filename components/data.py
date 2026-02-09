@@ -21,16 +21,6 @@ def load_data(dataset_loc: str, num_samples: int = None) -> Dataset:
     Returns:
         Dataset: Our dataset represented by a Ray Dataset.
     """
-
-    if not ray.is_initialized():
-        ray.init(
-            num_cpus=1,
-            num_gpus=0,
-            include_dashboard=False,
-            ignore_reinit_error=True,
-            log_to_driver=False,
-        )
-
     ds = ray.data.read_csv(dataset_loc)
     ds = ds.random_shuffle(seed=1234)
     ds = ray.data.from_items(ds.take(num_samples)) if num_samples else ds

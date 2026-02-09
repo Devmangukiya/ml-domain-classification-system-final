@@ -32,6 +32,7 @@ python components/train.py `
 
 http://127.0.0.1:8265
 mlflow ui --backend-store-uri file:///C:/Users/dev_m/MLOPs_Project/Devmangukiya/mlflow --port 5002
+mlflow ui --backend-store-uri file:///home/ray/MLOPs_Project/Devmangukiya/mlflow
 
 python components\tune.py ^
   --experiment-name llm ^
@@ -125,3 +126,9 @@ export PYTHONPATH=$(pwd)
 pytest tests/code/test_train.py -v
 
 echo $GITHUB_USERNAME
+
+ray stop --force || true
+
+anyscale cluster-env build deploy/cluster_env.yaml --name final-env
+
+mlflow ui --backend-store-uri file:///home/ray/MLOPs_Project/Devmangukiya/mlflow

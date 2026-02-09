@@ -72,26 +72,5 @@ if __name__ == "__main__":
     parser.add_argument("--run_id", help="run ID to use for serving.")
     parser.add_argument("--threshold", type=float, default=0.9, help="threshold for `other` class.")
     args = parser.parse_args()
-   
-    ray.init(
-        ignore_reinit_error=True,
-        num_gpus=0,              
-        include_dashboard=True,
-        dashboard_host="127.0.0.1",
-        dashboard_port=8265,
-        runtime_env={
-            "env_vars": {
-                "GITHUB_USERNAME": os.environ.get("GITHUB_USERNAME", "")
-            }
-        },
-    )
-
+    ray.init(runtime_env={"env_vars": {"GITHUB_USERNAME": os.environ["GITHUB_USERNAME"]}})
     serve.run(ModelDeployment.bind(run_id=args.run_id, threshold=args.threshold))
-
-    print("--- Server is running! Press Ctrl+C to stop ---")
-    try:
-        while True:
-            import time
-            time.sleep(1)
-    except KeyboardInterrupt:
-        print("Shutting down...")

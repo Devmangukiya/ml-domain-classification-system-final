@@ -128,21 +128,6 @@ def evaluate(
     Returns:
         Dict: model's performance metrics on the dataset.
     """
-    if ray.is_initialized():
-        ray.shutdown()
-
-    ray.init(
-        ignore_reinit_error=True,
-        num_gpus=0,              # 🔥 CRITICAL for Windows
-        include_dashboard=True,
-        dashboard_host="127.0.0.1",
-        dashboard_port=8265,
-        runtime_env={
-            "env_vars": {
-                "GITHUB_USERNAME": os.environ.get("GITHUB_USERNAME", "")
-            }
-        },
-    )
 
 
     ds = data.load_data(dataset_loc)

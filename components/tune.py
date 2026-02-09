@@ -18,7 +18,7 @@ from ray.tune.schedulers import AsyncHyperBandScheduler
 from ray.tune.search import ConcurrencyLimiter
 from ray.tune.search.hyperopt import HyperOptSearch
 from typing_extensions import Annotated
-from pathlib import Path
+
 from components import data, train, utils
 from components.config import EFS_DIR, MLFLOW_TRACKING_URI, logger
 
@@ -30,7 +30,7 @@ app = typer.Typer()
 def tune_models(
     experiment_name: Annotated[str, typer.Option(help="name of the experiment for this training workload.")] = None,
     dataset_loc: Annotated[str, typer.Option(help="location of the dataset.")] = None,
-    initial_params: Annotated[Path, typer.Option(help="initial config for the tuning workload.")] = None,
+    initial_params: Annotated[str, typer.Option(help="initial config for the tuning workload.")] = None,
     num_workers: Annotated[int, typer.Option(help="number of workers to use for training.")] = 1,
     cpu_per_worker: Annotated[int, typer.Option(help="number of CPUs to use per worker.")] = 1,
     gpu_per_worker: Annotated[int, typer.Option(help="number of GPUs to use per worker.")] = 0,
@@ -61,8 +61,6 @@ def tune_models(
     Returns:
         ray.tune.result_grid.ResultGrid: results of the tuning experiment.
     """
-
-
     # Set up
     utils.set_seeds()
     train_loop_config = {}
@@ -120,11 +118,13 @@ def tune_models(
         experiment_name=experiment_name,
         save_artifact=True,
     )
-    run_config = RunConfig(callbacks=[mlflow_callback], checkpoint_config=checkpoint_config, storage_path=EFS_DIR, local_dir=EFS_DIR)
+    run_config = RunConfig(callbacks=[mlflow_callback], 
+                            checkpoint_config=checkpoint_config, 
+                            storage_path="s3://model-registry-dev-mangukiya-v2/ray-checkpoints" 
+                            )
 
     # Hyperparameters to start with
-    with open(initial_params, "r") as f:
-        initial_params = json.load(f)
+    initial_params = json.loads(initial_params)
     search_alg = HyperOptSearch(points_to_evaluate=initial_params)
     search_alg = ConcurrencyLimiter(search_alg, max_concurrent=2)  # trade off b/w optimization and search space
 
@@ -179,17 +179,5 @@ def tune_models(
 if __name__ == "__main__":  # pragma: no cover, application
     if ray.is_initialized():
         ray.shutdown()
-    ray.init(
-        ignore_reinit_error=True,
-        num_gpus=0,              # 🔥 CRITICAL for Windows
-        include_dashboard=True,
-        dashboard_host="127.0.0.1",
-        dashboard_port=8265,
-        runtime_env={
-            "env_vars": {
-                "GITHUB_USERNAME": os.environ.get("GITHUB_USERNAME", "")
-            }
-        },
-    )
-
+    ray.init(runtime_env={"env_vars": {"GITHUB_USERNAME": os.environ["GITHUB_USERNAME"]}})
     app()

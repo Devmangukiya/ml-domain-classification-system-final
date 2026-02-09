@@ -118,7 +118,5 @@ docs/_build/
 # =========================
 .DS_Store
 .trash/
-zx.txt
-zx.py
 s3-workflow-user_accessKeys.csv
 /datasets

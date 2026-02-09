@@ -9,7 +9,7 @@ worker_node_types:
 - name: cpu_worker
   instance_type: m7i-flex.large
   min_workers: 0
-  max_workers: 1
+  max_workers: 4
   use_spot: false
 
 aws:
