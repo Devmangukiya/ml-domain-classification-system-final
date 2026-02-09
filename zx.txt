@@ -132,3 +132,5 @@ ray stop --force || true
 anyscale cluster-env build deploy/cluster_env.yaml --name final-env
 
 mlflow ui --backend-store-uri file:///home/ray/MLOPs_Project/Devmangukiya/mlflow
+
+anyscale job submit deploy/jobs/workloads.yaml
